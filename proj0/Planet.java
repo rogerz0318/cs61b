@@ -9,7 +9,7 @@ public class Planet {
         this.xxVel = xxVel;
         this.yyVel = yyVel;
         this.mass = mass;
-        this.imgFileName = imgFileName;
+        this.imgFileName = "./images/" + imgFileName;
     }
 
     public Planet(Planet p) {
@@ -23,6 +23,7 @@ public class Planet {
 
     /**
      * Calculates the distance between this planet and the planet p.
+     *
      * @param p the other planet instance
      * @return the distance between the two planets
      */
@@ -34,6 +35,7 @@ public class Planet {
 
     /**
      * Calculates the total force exerted by another planet p.
+     *
      * @param p the other planet instance
      * @return a positive total exerted force
      */
@@ -45,6 +47,7 @@ public class Planet {
 
     /**
      * Calculates the force in x-direction exerted by another planet p.
+     *
      * @param p the other planet instance
      * @return exerted force in x-direction, positive if pointing to +x and vice versa
      */
@@ -56,6 +59,7 @@ public class Planet {
 
     /**
      * Calculates the force in y-direction exerted by another planet p.
+     *
      * @param p the other planet instance
      * @return exerted force in y-direction, positive if pointing to +y and vice versa
      */
@@ -67,12 +71,13 @@ public class Planet {
 
     /**
      * Calculates the net force in x-direction exerted by an array of planets.
+     *
      * @param planets an array of planets
      * @return the net force exerted on this planet by the array of planets
      */
     public double calcNetForceExertedByX(Planet[] planets) {
         double f = 0;
-        for (Planet p: planets) {
+        for (Planet p : planets) {
             f += calcForceExertedByX(p);
         }
         return f;
@@ -80,12 +85,13 @@ public class Planet {
 
     /**
      * Calculates the net force in y-direction exerted by an array of planets.
+     *
      * @param planets an array of planets
      * @return the net force exerted on this planet by the array of planets
      */
     public double calcNetForceExertedByY(Planet[] planets) {
         double f = 0;
-        for (Planet p: planets) {
+        for (Planet p : planets) {
             f += calcForceExertedByY(p);
         }
         return f;
@@ -93,6 +99,7 @@ public class Planet {
 
     /**
      * Updates the planet's location after a short period of time.
+     *
      * @param dt a short time period
      * @param fx x-directional force exerted on this planet
      * @param fy y-directional force exerted on this planet
@@ -102,5 +109,12 @@ public class Planet {
         xxPos += xxVel * dt;
         yyVel += (fy / mass) * dt;
         yyPos += yyVel * dt;
+    }
+
+    /**
+     * Draws the planet using the StdDraw library.
+     */
+    public void draw() {
+        StdDraw.picture(xxPos, yyPos, imgFileName);
     }
 }
