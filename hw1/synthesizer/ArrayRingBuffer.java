@@ -84,8 +84,8 @@ public class ArrayRingBuffer<T> extends AbstractBoundedQueue<T> {
         for (int i = 0; i < arb.capacity; i++)
             arb.enqueue(i);
         System.out.println(arb.isEmpty());
-        for (Iterator<Integer> it = arb.iterator(); it.hasNext();)
-            System.out.println(it.next());
+        for (int i : arb)
+            System.out.println(i);
         System.out.println(arb.isEmpty());
     }
 }
