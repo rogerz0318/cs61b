@@ -1,16 +1,16 @@
 /**
  * Linked list implementation of Deque
  */
-public class LinkedListDeque<Item> implements Deque<Item> {
+public class LinkedListDeque<T> implements Deque<T> {
 
     /**
      * Helper class that stores the item and references to the Node at previous and next Deque index
      */
     private class Node { // no need to use generic type for this private class!
         public Node prev, next;
-        public Item item;
+        public T item;
 
-        public Node(Item item, Node prev, Node next) {
+        public Node(T item, Node prev, Node next) {
             this.prev = prev;
             this.next = next;
             this.item = item;
@@ -33,15 +33,15 @@ public class LinkedListDeque<Item> implements Deque<Item> {
      * Create a linked list deque with many number of items.
      * @param items
      */
-    public LinkedListDeque(Item... items) {
+    public LinkedListDeque(T... items) {
         this();
-        for(Item item: items) {
+        for(T item: items) {
             this.addLast(item);
         }
     }
 
     @Override
-    public void addFirst(Item t) {
+    public void addFirst(T t) {
         Node firstNode = sentinel.next;
         Node node = new Node(t, sentinel, firstNode);
         firstNode.prev = node;
@@ -50,7 +50,7 @@ public class LinkedListDeque<Item> implements Deque<Item> {
     }
 
     @Override
-    public void addLast(Item t) {
+    public void addLast(T t) {
         Node lastNode = sentinel.prev;
         Node node = new Node(t, lastNode, sentinel);
         lastNode.next = node;
@@ -85,7 +85,7 @@ public class LinkedListDeque<Item> implements Deque<Item> {
     }
 
     @Override
-    public Item removeFirst() {
+    public T removeFirst() {
         if (size == 0) {
             return null;
         } else {
@@ -98,7 +98,7 @@ public class LinkedListDeque<Item> implements Deque<Item> {
     }
 
     @Override
-    public Item removeLast() {
+    public T removeLast() {
         if (size == 0) {
             return null;
         } else {
@@ -111,7 +111,7 @@ public class LinkedListDeque<Item> implements Deque<Item> {
     }
 
     @Override
-    public Item get(int index) {
+    public T get(int index) {
         if (index >= size || index < 0) return null;
         Node node = sentinel.next;
         for (int i = 0; i < index; i++) {
@@ -123,14 +123,14 @@ public class LinkedListDeque<Item> implements Deque<Item> {
     /**
      * Same as get, but uses recursion.
      * @param index Index of item
-     * @return Item at specified index
+     * @return T at specified index
      */
-    public Item getRecursive(int index) {
+    public T getRecursive(int index) {
         return getRecursiveFrom(index, sentinel.next);
     }
 
     /* Helper method for getRecursive(int index) */
-    private Item getRecursiveFrom(int index, Node node) {
+    private T getRecursiveFrom(int index, Node node) {
         if (index == 0) return node.item;
         else if (index > 0) return getRecursiveFrom(index-1, node.next);
         else return null;

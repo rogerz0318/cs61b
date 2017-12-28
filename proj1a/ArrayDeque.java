@@ -1,11 +1,11 @@
 /**
  * Array implementation of Deque
  */
-public class ArrayDeque<Item> implements Deque<Item> {
+public class ArrayDeque<T> implements Deque<T> {
 
     private static final int INITIAL_CAPACITY = 8;
     private static final double UTILIZATION_THRESHOLD = 0.25;
-    private Item[] items;
+    private T[] items;
     private int size = 0;
     private int firstIndex = 0; // first index is defined to be right at the front most item
     private int lastIndex = 0; // last index is defined to be 1 larger than the index of back most item
@@ -14,7 +14,7 @@ public class ArrayDeque<Item> implements Deque<Item> {
      * Create an array deque with initial capacity of 8.
      */
     public ArrayDeque() {
-        items = (Item[])new Object[INITIAL_CAPACITY];
+        items = (T[])new Object[INITIAL_CAPACITY];
     }
 
     /**
@@ -22,22 +22,22 @@ public class ArrayDeque<Item> implements Deque<Item> {
      * @param capacity Initial capacity
      */
     public ArrayDeque(int capacity) {
-        items = (Item[])new Object[capacity];
+        items = (T[])new Object[capacity];
     }
 
     /**
      * Create an array deque with many number of items.
      * @param items
      */
-    public ArrayDeque(Item... items) {
+    public ArrayDeque(T... items) {
         this();
-        for(Item item: items) {
+        for(T item: items) {
             this.addLast(item);
         }
     }
 
     @Override
-    public void addFirst(Item t) {
+    public void addFirst(T t) {
         expandIfNeeded();
         firstIndex = prevIndex(firstIndex);
         items[firstIndex] = t;
@@ -45,7 +45,7 @@ public class ArrayDeque<Item> implements Deque<Item> {
     }
 
     @Override
-    public void addLast(Item t) {
+    public void addLast(T t) {
         expandIfNeeded();
         items[lastIndex] = t;
         lastIndex = nextIndex(lastIndex);
@@ -77,10 +77,10 @@ public class ArrayDeque<Item> implements Deque<Item> {
     }
 
     @Override
-    public Item removeFirst() {
+    public T removeFirst() {
         if (size == 0) return null;
         else {
-            Item t = items[firstIndex];
+            T t = items[firstIndex];
             items[firstIndex] = null;
             firstIndex = nextIndex(firstIndex);
             size -= 1;
@@ -90,11 +90,11 @@ public class ArrayDeque<Item> implements Deque<Item> {
     }
 
     @Override
-    public Item removeLast() {
+    public T removeLast() {
         if (size == 0) return null;
         else {
             lastIndex = prevIndex(lastIndex);
-            Item t = items[lastIndex];
+            T t = items[lastIndex];
             items[lastIndex] = null;
             size -= 1;
             shrinkIfNeeded();
@@ -103,7 +103,7 @@ public class ArrayDeque<Item> implements Deque<Item> {
     }
 
     @Override
-    public Item get(int index) {
+    public T get(int index) {
         return items[findIndex(firstIndex, index)];
     }
 
@@ -112,7 +112,7 @@ public class ArrayDeque<Item> implements Deque<Item> {
      */
     private void expandIfNeeded() {
         if (size == items.length) {
-            Item[] newItems = (Item[]) new Object[items.length * 2]; // expand to 2x space
+            T[] newItems = (T[]) new Object[items.length * 2]; // expand to 2x space
             System.arraycopy(items, firstIndex, newItems, 0, items.length - firstIndex);
             System.arraycopy(items, 0, newItems, items.length - firstIndex, lastIndex);
             items = newItems;
@@ -130,7 +130,7 @@ public class ArrayDeque<Item> implements Deque<Item> {
             int newSize = Math.max(Math.max((int)(size / (UTILIZATION_THRESHOLD * 2)), INITIAL_CAPACITY), size);
 //            System.out.println("size = " + size);
 //            System.out.println("newSize = " + newSize);
-            Item[] newItems = (Item[]) new Object[newSize];
+            T[] newItems = (T[]) new Object[newSize];
             if (firstIndex > lastIndex) {
                 // data are in two segments
                 System.arraycopy(items, firstIndex, newItems, 0, items.length - firstIndex);
