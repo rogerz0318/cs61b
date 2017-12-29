@@ -1,5 +1,5 @@
 package db;
 
-public interface DataWarehouse {
+public interface Warehouse {
 
 }

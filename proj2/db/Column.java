@@ -2,13 +2,13 @@ package db;
 
 import java.util.List;
 
-public interface DataColumn extends Operable {
+public interface Column extends Operable {
     /**
      * Get the i-th row data. i starts from zero.
      * @param i
      * @return
      */
-    DataEntry get(int i);
+    Entry get(int i);
 
     /**
      * Get the column name.
@@ -35,5 +35,5 @@ public interface DataColumn extends Operable {
      * Get a list of data in this column.
      * @return
      */
-    List<DataEntry> getData();
+    List<Entry> getData();
 }

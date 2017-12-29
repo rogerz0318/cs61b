@@ -1,11 +1,10 @@
 package db;
 
-public interface DataEntry extends Comparable<DataEntry>, Operable {
+public interface Entry extends Comparable<Entry>, Operable {
 
     @Override
-    int compareTo(DataEntry d); // for comparison operations: ==, !=, <, >, <= and >=
+    int compareTo(Entry entry); // for comparison operations: ==, !=, <, >, <= and >=
 
     @Override
     String toString(); // return String representation
-
 }
