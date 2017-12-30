@@ -2,8 +2,6 @@ package db.test;
 
 import db.*;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
-
 import static org.junit.Assert.*;
 
 public class EntryTest {
@@ -18,7 +16,7 @@ public class EntryTest {
     NumberEntry i2 = new NumberEntry(3);
     NumberEntry i3 = new NumberEntry(5);
     NumberEntry i4 = new NumberEntry(5);
-    NumberEntry i_inf = (NumberEntry) (i1.divide(i0));
+    NumberEntry i_inf = i1.divide(i0);
 
     NumberEntry f0 = new NumberEntry(0.0);
     NumberEntry f1 = new NumberEntry(-1.5);
@@ -27,7 +25,7 @@ public class EntryTest {
     NumberEntry f4 = new NumberEntry(5.5);
     NumberEntry f5 = new NumberEntry(5.0);
     NumberEntry f6 = new NumberEntry(1375.0188236);
-    NumberEntry f_inf = (NumberEntry) (f1.divide(f0));
+    NumberEntry f_inf = f1.divide(f0);
 
     @Test
     public void compareTest() {
@@ -41,7 +39,7 @@ public class EntryTest {
         assertTrue(i3.compareTo(i2) > 0);
         assertTrue(i3.compareTo(i4) == 0);
         assertTrue(i_inf.compareTo(i4) > 0);
-        assertTrue(i_inf.compareTo(i_inf) == 0);
+        assertTrue(i_inf.compareTo(f_inf) == 0);
 
         assertTrue(f1.compareTo(f0) < 0);
         assertTrue(f3.compareTo(f2) > 0);

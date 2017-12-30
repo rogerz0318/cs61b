@@ -14,6 +14,10 @@ public class NumberEntry implements Entry {
         this(value, true);
     }
 
+    public NumberEntry(Type type) {
+        this.type = type;
+    }
+
     private NumberEntry(double value, boolean isFloat) {
         if (isFloat) {
             this.value = value;
@@ -72,6 +76,20 @@ public class NumberEntry implements Entry {
         }
     }
 
+    @Override
+    public NumberEntry parse(String s) {
+        if (s != null && !s.equals("")) {
+            if (type == Type.FLOAT) {
+                value = Double.parseDouble(s);
+            } else if (type == Type.INT) {
+                value = Integer.parseInt(s);
+            } else {
+                throw new RuntimeException("Illegal number type.");
+            }
+        }
+        return this;
+    }
+
     private boolean isAnyFloat(NumberEntry a, NumberEntry b) {
         return a.type == Type.FLOAT || b.type == Type.FLOAT;
     }
@@ -81,7 +99,7 @@ public class NumberEntry implements Entry {
     }
 
     @Override
-    public Operable add(Operable o) {
+    public NumberEntry add(Operable o) {
         if (o instanceof NumberEntry) {
             return new NumberEntry(value + ((NumberEntry) o).value,
                     isAnyFloat(this, (NumberEntry) o))
@@ -92,7 +110,7 @@ public class NumberEntry implements Entry {
     }
 
     @Override
-    public Operable subtract(Operable o) {
+    public NumberEntry subtract(Operable o) {
         if (o instanceof NumberEntry) {
             return new NumberEntry(value - ((NumberEntry) o).value,
                     isAnyFloat(this, (NumberEntry) o))
@@ -103,7 +121,7 @@ public class NumberEntry implements Entry {
     }
 
     @Override
-    public Operable multiply(Operable o) {
+    public NumberEntry multiply(Operable o) {
         if (o instanceof NumberEntry) {
             return new NumberEntry(value * ((NumberEntry) o).value,
                     isAnyFloat(this, (NumberEntry) o))
@@ -114,7 +132,7 @@ public class NumberEntry implements Entry {
     }
 
     @Override
-    public Operable divide(Operable o) {
+    public NumberEntry divide(Operable o) {
         // need to check for zero denominator here
         // if denominator is zero, result will be infinite
         if (o instanceof NumberEntry) {

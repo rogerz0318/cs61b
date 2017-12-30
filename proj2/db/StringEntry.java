@@ -3,7 +3,6 @@ package db;
 public class StringEntry implements Entry {
 
     private String value = "";
-    private Type type = Type.STRING;
 
     public StringEntry() {}
 
@@ -28,14 +27,22 @@ public class StringEntry implements Entry {
 
     @Override
     public String toString() {
-        if (value == null || value == "") {
+        if (value == null || value.equals("")) {
             return "NOVALUE";
         }
         return "'" + value + "'";
     }
 
     @Override
-    public Operable add(Operable o) {
+    public StringEntry parse(String s) {
+        if (s != null && !s.equals("")) {
+            value = s;
+        }
+        return this;
+    }
+
+    @Override
+    public StringEntry add(Operable o) {
         if (!(o instanceof StringEntry)) {
             throw new RuntimeException("Cannot add string and non-string.");
         } else {
@@ -44,17 +51,17 @@ public class StringEntry implements Entry {
     }
 
     @Override
-    public Operable subtract(Operable o) {
+    public StringEntry subtract(Operable o) {
         throw new RuntimeException("Cannot subtract string.");
     }
 
     @Override
-    public Operable multiply(Operable o) {
+    public StringEntry multiply(Operable o) {
         throw new RuntimeException("Cannot multiply string.");
     }
 
     @Override
-    public Operable divide(Operable o) {
+    public StringEntry divide(Operable o) {
         throw new RuntimeException("Cannot divide string.");
     }
 }

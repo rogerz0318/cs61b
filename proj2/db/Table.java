@@ -1,7 +1,6 @@
 package db;
 
 import java.io.File;
-import java.util.List;
 
 public interface Table {
 
