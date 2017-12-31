@@ -1,6 +1,9 @@
 package db;
 
 public class Database {
+
+    public static final String DELIMITER = ",";
+
     public Database() {
         // YOUR CODE HERE
     }

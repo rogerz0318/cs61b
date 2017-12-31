@@ -1,20 +1,28 @@
 package db;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.List;
 
 public interface Table {
 
-    Table join(Table table);
+    Table joinWith(String name, Table table);
 
-    Table load(File file);
+    void writeToFile(File file) throws IOException;
 
-    boolean store(File file);
+    void insertRow(Row row);
 
-    boolean insert(String[] values);
+    Table filterBy(Condition c);
 
-    Table filter(Condition c);
+    Table selectBy(ColumnExpression ce);
 
-    Table select(ColumnExpression ce);
+    String getName();
+
+    List<String> getAllColumnNames();
+
+    List<Type> getAllColumnTypes();
+
+    List<Row> getAllRows();
 
     @Override
     String toString();

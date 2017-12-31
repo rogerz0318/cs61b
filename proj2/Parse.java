@@ -83,7 +83,7 @@ public class Parse {
 
     private static void createSelectedTable(String name, String exprs, String tables, String conds) {
         System.out.printf("You are trying to create a table named %s by selecting these expressions:" +
-                " '%s' from the join of these tables: '%s', filtered by these conditions: '%s'\n", name, exprs, tables, conds);
+                " '%s' from the joinWith of these tables: '%s', filtered by these conditions: '%s'\n", name, exprs, tables, conds);
     }
 
     private static void loadTable(String name) {
@@ -91,7 +91,7 @@ public class Parse {
     }
 
     private static void storeTable(String name) {
-        System.out.printf("You are trying to store the table named %s\n", name);
+        System.out.printf("You are trying to writeToFile the table named %s\n", name);
     }
 
     private static void dropTable(String name) {
@@ -101,11 +101,11 @@ public class Parse {
     private static void insertRow(String expr) {
         Matcher m = INSERT_CLS.matcher(expr);
         if (!m.matches()) {
-            System.err.printf("Malformed insert: %s\n", expr);
+            System.err.printf("Malformed insertRow: %s\n", expr);
             return;
         }
 
-        System.out.printf("You are trying to insert the row \"%s\" into the table %s\n", m.group(2), m.group(1));
+        System.out.printf("You are trying to insertRow the row \"%s\" into the table %s\n", m.group(2), m.group(1));
     }
 
     private static void printTable(String name) {
@@ -115,7 +115,7 @@ public class Parse {
     private static void select(String expr) {
         Matcher m = SELECT_CLS.matcher(expr);
         if (!m.matches()) {
-            System.err.printf("Malformed select: %s\n", expr);
+            System.err.printf("Malformed selectBy: %s\n", expr);
             return;
         }
 
@@ -123,7 +123,7 @@ public class Parse {
     }
 
     private static void select(String exprs, String tables, String conds) {
-        System.out.printf("You are trying to select these expressions:" +
-                " '%s' from the join of these tables: '%s', filtered by these conditions: '%s'\n", exprs, tables, conds);
+        System.out.printf("You are trying to selectBy these expressions:" +
+                " '%s' from the joinWith of these tables: '%s', filtered by these conditions: '%s'\n", exprs, tables, conds);
     }
 }

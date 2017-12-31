@@ -16,28 +16,32 @@ public interface Operable {
      * Performs addition (concatenation for strings)
      * @param o
      * @return
+     * @throws UnsupportedOperationException
      */
-    Operable add(Operable o);
+    Operable add(Operable o) throws UnsupportedOperationException;
 
     /**
-     * Performs subtraction (throws RuntimeException for strings)
+     * Performs subtraction (throws UnsupportedOperationException for strings)
      * @param o
      * @return
+     * @throws UnsupportedOperationException
      */
-    Operable subtract(Operable o);
+    Operable subtract(Operable o) throws UnsupportedOperationException;
 
     /**
-     * Performs multiplication (throws RuntimeException for strings)
+     * Performs multiplication (throws UnsupportedOperationException for strings)
      * @param o
      * @return
+     * @throws UnsupportedOperationException
      */
-    Operable multiply(Operable o);
+    Operable multiply(Operable o) throws UnsupportedOperationException;
 
     /**
-     * Performs division (throws RuntimeException for strings).
+     * Performs division (throws UnsupportedOperationException for strings).
      * If divided by zero, returns NaN.
      * @param o
      * @return
+     * @throws UnsupportedOperationException
      */
-    Operable divide(Operable o);
+    Operable divide(Operable o) throws UnsupportedOperationException;
 }

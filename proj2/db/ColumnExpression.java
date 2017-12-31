@@ -14,7 +14,7 @@ package db;
  * There are a few special cases for column expressions, listed below.
  *
  * 1. If a lone * is supplied instead of a list of column expressions,
- *    all columns of the result of the join should be selected.
+ *    all columns of the result of the joinWith should be selected.
  * 2. If only a single operand is given, it must be a column name.
  *    The new column shares its name with the original column.
  * 3. If two operands are given, the left must be a column name while
