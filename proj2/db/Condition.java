@@ -13,5 +13,10 @@ package db;
  * Valid conditional comparators are ==, !=, <, >, <= and >=.
  */
 public interface Condition {
+    /**
+     * Returns true if this condition is satisfied for the given row.
+     * @param row
+     * @return
+     */
     boolean isSatisfied(Row row);
 }

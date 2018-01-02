@@ -21,10 +21,10 @@ package db;
  *    the right could be either a column name or a literal.
  *    An alias must always be provided when there are two operands.
  */
-public interface ColumnExpression {
+public interface ColumnExpr {
     /**
-     * Returns column from table that evaluates to this condition
-     * @param c
+     * Returns a column from the given table that evaluates to this expression
+     * @param table
      * @return
      */
     Column evaluate(Table table);

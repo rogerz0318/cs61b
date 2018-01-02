@@ -59,7 +59,7 @@ public class StringEntry implements Entry {
     }
 
     @Override
-    public StringEntry parse(String s) {
+    public StringEntry parse(String s) throws IllegalArgumentException {
         if (s != null) {
             if (s.startsWith("'") && s.endsWith("'") && !s.equals(NAN_REP)) {
                 value = s.substring(1, s.length() - 1);
@@ -76,28 +76,38 @@ public class StringEntry implements Entry {
     }
 
     @Override
-    public StringEntry add(Operable o) throws UnsupportedOperationException {
-        if (!(o instanceof StringEntry)) {
-            throw new UnsupportedOperationException("Cannot add string and non-string.");
+    public StringEntry operate(String operator, Operable o) throws UnsupportedOperationException {
+        if (o instanceof StringEntry) {
+            if (operator.equals("+")) {
+                StringEntry e = (StringEntry) o;
+                // if both are no-value, result should be no-value
+                return new StringEntry(value + e.value).setNoValue(noValue && e.noValue);
+            } else {
+                throw new UnsupportedOperationException("Unsupported operator '" + operator + "' for strings.");
+            }
         } else {
-            StringEntry e = (StringEntry) o;
-            // if both are no-value, result should be no-value
-            return new StringEntry(value + e.value).setNoValue(noValue && e.noValue);
+            throw new UnsupportedOperationException("Cannot perform '" + operator + "' between string " +
+                    toString() + " and non-string " + o.toString() + ".");
         }
     }
 
     @Override
+    public StringEntry add(Operable o) throws UnsupportedOperationException {
+        return operate("+", o);
+    }
+
+    @Override
     public StringEntry subtract(Operable o) throws UnsupportedOperationException {
-        throw new UnsupportedOperationException("Cannot subtract string.");
+        return operate("-", o);
     }
 
     @Override
     public StringEntry multiply(Operable o) throws UnsupportedOperationException {
-        throw new UnsupportedOperationException("Cannot multiply string.");
+        return operate("*", o);
     }
 
     @Override
     public StringEntry divide(Operable o) throws UnsupportedOperationException {
-        throw new UnsupportedOperationException("Cannot divide string.");
+        return operate("/", o);
     }
 }

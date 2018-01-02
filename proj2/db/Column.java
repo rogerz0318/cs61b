@@ -8,13 +8,21 @@ public interface Column extends Operable {
      * @param i
      * @return
      */
-    Entry get(int i);
+    default Entry get(int i) {
+        return getData().get(i);
+    }
 
     /**
      * Returns the column name.
      * @return
      */
     String getName();
+
+    /**
+     * Sets the column name.
+     * @param name
+     */
+    void setName(String name);
 
     /**
      * Returns the column type.

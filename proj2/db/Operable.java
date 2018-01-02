@@ -9,8 +9,19 @@ package db;
  * Adding columns means adding each entry, while adding column to
  * a data entry could mean adding all data in this column by that
  * given data entry.
+ *
+ * The arithmetic operations must return a new entry instance.
+ * Operands may not be mutated.
  */
 public interface Operable {
+    /**
+     * A general operation method that performs the supported operations
+     * via a String operator (such as +, -, etc.). Returns the result Operable.
+     * @param operator
+     * @param o the operand
+     * @return
+     */
+    Operable operate(String operator, Operable o) throws UnsupportedOperationException;
 
     /**
      * Performs addition (concatenation for strings)

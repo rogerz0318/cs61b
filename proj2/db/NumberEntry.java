@@ -144,53 +144,90 @@ public class NumberEntry implements Entry {
     }
 
     @Override
-    public NumberEntry add(Operable o) throws UnsupportedOperationException {
+    public NumberEntry operate(String operator, Operable o) throws UnsupportedOperationException {
         if (o instanceof NumberEntry) {
-            return new NumberEntry(value + ((NumberEntry) o).value,
-                    isAnyFloat(this, (NumberEntry) o))
-                    .setNan(isAnyNaN(this, (NumberEntry) o))
+            double newValue;
+            boolean newNan = isAnyNaN(this, (NumberEntry) o);
+            switch (operator) {
+                case "+":
+                    newValue = value + ((NumberEntry) o).value;
+                    break;
+                case "-":
+                    newValue = value - ((NumberEntry) o).value;
+                    break;
+                case "*":
+                    newValue = value * ((NumberEntry) o).value;
+                    break;
+                case "/":
+                    newValue = value / ((NumberEntry) o).value;
+                    // special case for division: if denominator is zero, result will be nan
+                    newNan = Double.isInfinite(newValue) || newNan;
+                    break;
+                default:
+                    throw new UnsupportedOperationException("Unsupported operator '" + operator + "' for numbers.");
+            }
+
+            return new NumberEntry(newValue, isAnyFloat(this, (NumberEntry) o))
+                    .setNan(newNan)
                     .setNoValue(isBothNoValue(this, (NumberEntry) o));
         } else {
-            throw new UnsupportedOperationException("Cannot add number and non-number.");
+            throw new UnsupportedOperationException("Cannot perform '" + operator + "' between number " +
+                    toString() + " and non-number " + o.toString() + ".");
         }
+    }
+
+    @Override
+    public NumberEntry add(Operable o) throws UnsupportedOperationException {
+        return operate("+", o);
+//        if (o instanceof NumberEntry) {
+//            return new NumberEntry(value + ((NumberEntry) o).value,
+//                    isAnyFloat(this, (NumberEntry) o))
+//                    .setNan(isAnyNaN(this, (NumberEntry) o))
+//                    .setNoValue(isBothNoValue(this, (NumberEntry) o));
+//        } else {
+//            throw new UnsupportedOperationException("Cannot add number and non-number.");
+//        }
     }
 
     @Override
     public NumberEntry subtract(Operable o) throws UnsupportedOperationException {
-        if (o instanceof NumberEntry) {
-            return new NumberEntry(value - ((NumberEntry) o).value,
-                    isAnyFloat(this, (NumberEntry) o))
-                    .setNan(isAnyNaN(this, (NumberEntry) o))
-                    .setNoValue(isBothNoValue(this, (NumberEntry) o));
-        } else {
-            throw new UnsupportedOperationException("Cannot subtract number and non-number.");
-        }
+        return operate("-", o);
+//        if (o instanceof NumberEntry) {
+//            return new NumberEntry(value - ((NumberEntry) o).value,
+//                    isAnyFloat(this, (NumberEntry) o))
+//                    .setNan(isAnyNaN(this, (NumberEntry) o))
+//                    .setNoValue(isBothNoValue(this, (NumberEntry) o));
+//        } else {
+//            throw new UnsupportedOperationException("Cannot subtract number and non-number.");
+//        }
     }
 
     @Override
     public NumberEntry multiply(Operable o) throws UnsupportedOperationException {
-        if (o instanceof NumberEntry) {
-            return new NumberEntry(value * ((NumberEntry) o).value,
-                    isAnyFloat(this, (NumberEntry) o))
-                    .setNan(isAnyNaN(this, (NumberEntry) o))
-                    .setNoValue(isBothNoValue(this, (NumberEntry) o));
-        } else {
-            throw new UnsupportedOperationException("Cannot multiply number and non-number.");
-        }
+        return operate("*", o);
+//        if (o instanceof NumberEntry) {
+//            return new NumberEntry(value * ((NumberEntry) o).value,
+//                    isAnyFloat(this, (NumberEntry) o))
+//                    .setNan(isAnyNaN(this, (NumberEntry) o))
+//                    .setNoValue(isBothNoValue(this, (NumberEntry) o));
+//        } else {
+//            throw new UnsupportedOperationException("Cannot multiply number and non-number.");
+//        }
     }
 
     @Override
     public NumberEntry divide(Operable o) throws UnsupportedOperationException {
-        // need to check for zero denominator here
-        // if denominator is zero, result will be nan
-        if (o instanceof NumberEntry) {
-            NumberEntry e = (NumberEntry) o;
-            double v = value / ((NumberEntry) o).value;
-            boolean nan = Double.isInfinite(v) || isAnyNaN(this, e);
-            return new NumberEntry(v, isAnyFloat(this, e)).setNan(nan)
-                    .setNoValue(isBothNoValue(this, (NumberEntry) o));
-        } else {
-            throw new UnsupportedOperationException("Cannot divide number and non-number.");
-        }
+        return operate("/", o);
+//        // need to check for zero denominator here
+//        // if denominator is zero, result will be nan
+//        if (o instanceof NumberEntry) {
+//            NumberEntry e = (NumberEntry) o;
+//            double v = value / ((NumberEntry) o).value;
+//            boolean nan = Double.isInfinite(v) || isAnyNaN(this, e);
+//            return new NumberEntry(v, isAnyFloat(this, e)).setNan(nan)
+//                    .setNoValue(isBothNoValue(this, (NumberEntry) o));
+//        } else {
+//            throw new UnsupportedOperationException("Cannot divide number and non-number.");
+//        }
     }
 }

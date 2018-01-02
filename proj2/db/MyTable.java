@@ -6,6 +6,7 @@ import java.util.*;
 public class MyTable implements Table {
 
     private static String delimiter = ",";
+    private static final String DEFAULT_NAME = "untitled";
     private String name;
     private List<Row> rows;
     private List<Type> columnTypes;
@@ -48,7 +49,12 @@ public class MyTable implements Table {
         return t;
     }
 
-    private MyTable() {}
+    private MyTable() {
+        name = DEFAULT_NAME;
+        rows = new ArrayList<>();
+        columnTypes = new ArrayList<>();
+        columnNames = new ArrayList<>();
+    }
 
     public static void setDelimiter(String s) {
         delimiter = s;
@@ -57,6 +63,11 @@ public class MyTable implements Table {
     @Override
     public String getName() {
         return name;
+    }
+
+    @Override
+    public void setName(String name) {
+        this.name = name;
     }
 
     @Override
@@ -74,7 +85,20 @@ public class MyTable implements Table {
         return rows;
     }
 
-    private MyTable doCartesianProduct(String name, Table table) {
+    @Override
+    public MyColumn getColumnByName(String name) {
+        if (!columnNames.contains(name)) {
+            return null;
+        }
+        int index = columnNames.indexOf(name);
+        List<Entry> entries = new ArrayList<>();
+        for (Row row : rows) {
+            entries.add(row.getData(index));
+        }
+        return new MyColumn(name, columnTypes.get(index), entries);
+    }
+
+    private MyTable doCartesianProduct(Table table) {
         List<String> joinedNames = new ArrayList<>();
         List<Type> joinedTypes = new ArrayList<>();
         List<Row> joinedRows = new ArrayList<>();
@@ -96,13 +120,13 @@ public class MyTable implements Table {
         }
 
         // Make new table
-        MyTable returnVal = new MyTable();
-        returnVal.name = name;
-        returnVal.columnNames = joinedNames;
-        returnVal.columnTypes = joinedTypes;
-        returnVal.rows = joinedRows;
+        MyTable t = new MyTable();
+        t.name = DEFAULT_NAME;
+        t.columnNames = joinedNames;
+        t.columnTypes = joinedTypes;
+        t.rows = joinedRows;
 
-        return returnVal;
+        return t;
     }
 
     /**
@@ -116,7 +140,7 @@ public class MyTable implements Table {
      * @return
      */
     @Override
-    public MyTable joinWith(String name, Table table) {
+    public MyTable joinWith(Table table) {
         // find the shared columns
         List<String> sharedColumnNames = new ArrayList<>();
         List<Type> sharedColumnTypes = new ArrayList<>();
@@ -136,7 +160,7 @@ public class MyTable implements Table {
         }
 
         if (sharedIndex.isEmpty()) {
-            return doCartesianProduct(name, table);
+            return doCartesianProduct(table);
         } else {
             // otherwise do inner join
             List<Row> joinedRows = new ArrayList<>();
@@ -199,13 +223,13 @@ public class MyTable implements Table {
             }
 
             // make table with merged instance variables
-            MyTable returnVal = new MyTable();
-            returnVal.name = name;
-            returnVal.columnNames = joinedNames;
-            returnVal.columnTypes = joinedTypes;
-            returnVal.rows = joinedRows;
+            MyTable t = new MyTable();
+            t.name = DEFAULT_NAME;
+            t.columnNames = joinedNames;
+            t.columnTypes = joinedTypes;
+            t.rows = joinedRows;
 
-            return returnVal;
+            return t;
         }
     }
 
@@ -246,8 +270,30 @@ public class MyTable implements Table {
     }
 
     @Override
-    public Table selectBy(ColumnExpression ce) {
-        return null;
+    public Table selectBy(List<ColumnExpr> ces) {
+        if (ces == null || ces.size() == 0) {
+            throw new IllegalArgumentException("Cannot select new table from null or " +
+                    "empty list of column expressions.");
+        }
+        MyTable t = new MyTable();
+        // collect all columns
+        List<Column> columns = new ArrayList<>();
+        for (ColumnExpr ce : ces) {
+            Column c = ce.evaluate(this);
+            columns.add(c);
+            t.columnNames.add(c.getName());
+            t.columnTypes.add(c.getType());
+        }
+        int numRows = columns.get(0).getData().size();
+        // build new table from collected columns
+        for (int i = 0; i < numRows; i++) {
+            List<Entry> entries = new ArrayList<>(); // for temporary storage of entries in this i-th row
+            for (Column c : columns) {
+                entries.add(c.get(i));
+            }
+            t.rows.add(new MyRow(entries.toArray(new Entry[0])));
+        }
+        return t;
     }
 
     private String titleRow() {
@@ -265,15 +311,5 @@ public class MyTable implements Table {
             s += "\n" + r.toString();
         }
         return s;
-    }
-
-    public static void main(String[] args) throws Exception {
-        MyTable t1 = MyTable.createFromFile(new File("examples/t1.tbl"));
-        MyTable t2 = MyTable.createFromFile(new File("examples/t2.tbl"));
-        MyTable t3 = t1.joinWith("t3", t2);
-        System.out.println(t3);
-        MyTable t4 = MyTable.createFromFile(new File("examples/t4.tbl"));
-        MyTable t5 = t3.joinWith("t5", t4);
-        System.out.println(t5);
     }
 }
