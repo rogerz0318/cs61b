@@ -5,7 +5,6 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 import java.io.*;
-import java.util.ArrayList;
 import java.util.Arrays;
 
 public class MyTableTest {
@@ -80,16 +79,32 @@ public class MyTableTest {
 
     @Test
     public void selectByTest() throws Exception {
-        MyTable records = MyTable.createFromFile(new File("db/test/teams.tbl"));
-        ColumnExpr ce1 = new MyColumnExpr("TeamName", "+", "'_from_Mars'", "MarsTeamName");
-        ColumnExpr ce2 = new MyColumnExpr("YearEstablished", "+", "1000");
-        String expected = "MarsTeamName string,YearEstablished int\n" +
-                "'Mets_from_Mars',2962\n" +
-                "'Steelers_from_Mars',2933\n" +
-                "'Patriots_from_Mars',2960\n" +
-                "'Cloud9_from_Mars',3012\n" +
-                "'EnVyUs_from_Mars',3007\n" +
-                "'Golden Bears_from_Mars',2886";
-        assertEquals(expected, records.selectBy(Arrays.asList(ce1, ce2)).toString());
+        MyTable teams = MyTable.createFromFile(new File("db/test/teams.tbl"));
+        ColumnExpr ce1 = new BinaryColumnExpr("TeamName", "+", "'_from_Mars'", "MarsTeamName");
+        ColumnExpr ce2 = new BinaryColumnExpr("YearEstablished", "+", "1000", "AThousandYearsLater");
+        ColumnExpr ce3 = new UnaryColumnExpr("Stadium");
+        String expected = "MarsTeamName string,AThousandYearsLater int,Stadium string\n" +
+                "'Mets_from_Mars',2962,'Citi Field'\n" +
+                "'Steelers_from_Mars',2933,'Heinz Field'\n" +
+                "'Patriots_from_Mars',2960,'Gillette Stadium'\n" +
+                "'Cloud9_from_Mars',3012,NOVALUE\n" +
+                "'EnVyUs_from_Mars',3007,NOVALUE\n" +
+                "'Golden Bears_from_Mars',2886,'Memorial Stadium'";
+        assertEquals(expected, teams.selectBy(Arrays.asList(ce1, ce2, ce3)).toString());
+    }
+
+    @Test
+    public void filterByTest() throws Exception {
+        MyTable teamsrecords = MyTable.createFromFile(new File("db/test/teams+records.tbl"));
+        StdCondition cond1 = new StdCondition("Sport", "==", "'NFL Football'", teamsrecords);
+        StdCondition cond2 = new StdCondition("Season", ">=", "2014", teamsrecords);
+        String expected = "TeamName string,City string,Sport string,YearEstablished int,Mascot string," +
+                "Stadium string,Season int,Wins int,Losses int,Ties int\n" +
+                "'Steelers','Pittsburgh','NFL Football',1933,'Steely McBeam','Heinz Field',2015,10,6,0\n" +
+                "'Steelers','Pittsburgh','NFL Football',1933,'Steely McBeam','Heinz Field',2014,11,5,0\n" +
+                "'Patriots','New England','NFL Football',1960,'Pat Patriot','Gillette Stadium',2015,12,4,0\n" +
+                "'Patriots','New England','NFL Football',1960,'Pat Patriot','Gillette Stadium',2014,12,4,0";
+        String actual = teamsrecords.filterBy(cond1).filterBy(cond2).toString();
+        assertEquals(expected, actual);
     }
 }

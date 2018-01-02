@@ -265,12 +265,20 @@ public class MyTable implements Table {
     }
 
     @Override
-    public Table filterBy(Condition c) {
-        return null;
+    public MyTable filterBy(Condition c) {
+        MyTable t = new MyTable();
+        t.columnNames.addAll(columnNames);
+        t.columnTypes.addAll(columnTypes);
+        for (Row row : rows) {
+            if (c.isSatisfied(row)) {
+                t.rows.add(row.copy());
+            }
+        }
+        return t;
     }
 
     @Override
-    public Table selectBy(List<ColumnExpr> ces) {
+    public MyTable selectBy(List<ColumnExpr> ces) {
         if (ces == null || ces.size() == 0) {
             throw new IllegalArgumentException("Cannot select new table from null or " +
                     "empty list of column expressions.");
