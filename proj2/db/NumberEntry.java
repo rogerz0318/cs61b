@@ -31,7 +31,7 @@ public class NumberEntry implements Entry {
             this.value = value;
             this.type = Type.FLOAT;
         } else {
-            this.value = Math.round(value);
+            this.value = Math.floor(value);
             this.type = Type.INT;
         }
     }
@@ -185,7 +185,7 @@ public class NumberEntry implements Entry {
 //                    .setNan(isAnyNaN(this, (NumberEntry) o))
 //                    .setNoValue(isBothNoValue(this, (NumberEntry) o));
 //        } else {
-//            throw new UnsupportedOperationException("Cannot add number and non-number.");
+//            throw new UnsupportedOperationException("Cannot addTable number and non-number.");
 //        }
     }
 

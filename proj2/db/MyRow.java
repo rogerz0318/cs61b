@@ -57,7 +57,7 @@ public class MyRow implements Row {
 //            Type type = types.getData(i);
 //            Entry entry = entries.getData(i);
 //            if (type == entry.getType()) {
-//                entries.add(entry);
+//                entries.addTable(entry);
 //            } else {
 //                throw new RuntimeException("Data entry type " +
 //                        entry.getType() + "does not match column type" +
@@ -75,7 +75,7 @@ public class MyRow implements Row {
     public MyRow parse(String s) {
         String[] tokens = s.split(delimiter);
         for (int i = 0; i < tokens.length && i < entries.size(); i++) {
-            entries.get(i).parse(tokens[i]);
+            entries.get(i).parse(tokens[i].trim());
         }
         return this;
     }

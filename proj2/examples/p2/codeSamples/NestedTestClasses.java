@@ -6,7 +6,7 @@ import static org.junit.Assert.*;
  *  without making them public! The key trick is to make
  *  a nested private class that contains your tests.
  *  If you're running from the command line, you'll need
- *  to add a main method as described in lab3b.
+ *  to addTable a main method as described in lab3b.
  *
  *  To run the tests, you might need to right click
  *  on the TestTheOuterClassPrivateMethods class down

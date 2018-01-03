@@ -87,7 +87,7 @@ public class Parse {
     }
 
     private static void loadTable(String name) {
-        System.out.printf("You are trying to load the table named %s\n", name);
+        System.out.printf("You are trying to loadTableFromFile the table named %s\n", name);
     }
 
     private static void storeTable(String name) {

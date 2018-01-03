@@ -14,7 +14,7 @@ public class UnaryColumnExpr implements ColumnExpr {
         // first operand must be a column
         Column c = table.getColumnByName(operand);
         if (c == null) {
-            throw new RuntimeException("Cannot find column named " + operand + " in table '" + table.getName() + "'.");
+            throw new RuntimeException("Cannot find column named '" + operand + "' in table '" + table.getName() + "'.");
         }
         // unary case (only one operator, excluding the case of * which needs to be handled in upper level)
         return c;
