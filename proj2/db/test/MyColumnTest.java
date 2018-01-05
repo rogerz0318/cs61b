@@ -49,7 +49,7 @@ public class MyColumnTest {
                 c_string.add(new StringEntry("s")).toString());
         assertEquals("Integers float\n0.000\n0.500\n1.000\n1.500\n2.000",
                 c_int.multiply(new NumberEntry(0.5)).toString());
-        assertEquals("Integers int\n0\n1\n1\n2\n2",
+        assertEquals("Integers int\n0\n0\n1\n1\n2",
                 c_int.divide(new NumberEntry(2)).toString());
     }
 

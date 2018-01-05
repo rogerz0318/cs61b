@@ -1,6 +1,12 @@
 package db;
 
 public class EntryFactory {
+
+    /**
+     * Returns a correct type of Entry instance that corresponds to the given string input.
+     * @param s
+     * @return
+     */
     public static Entry parse(String s) {
         Entry e;
         try {

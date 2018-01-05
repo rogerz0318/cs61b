@@ -7,6 +7,9 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * This Parser class is adapted from the Parse class from the Project 2 example code.
+ */
 public class Parser {
     // Various common constructs, simplifies parsing.
     private static final String REST  = "\\s*(.*)\\s*",
@@ -81,7 +84,7 @@ public class Parser {
     private void createNewTable(String name, String[] cols) {
 //        StringJoiner joiner = new StringJoiner(", ");
 //        for (int i = 0; i < cols.length-1; i++) {
-//            joiner.addTable(cols[i]);
+//            joiner.add(cols[i]);
 //        }
 //
 //        String colSentence = joiner.toString() + " and " + cols[cols.length-1];

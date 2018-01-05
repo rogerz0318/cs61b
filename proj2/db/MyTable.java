@@ -13,7 +13,7 @@ public class MyTable implements Table {
     private List<String> columnNames;
 
     /**
-     * Takes a column title, parse into column names and types. The column title should take this form: "UserID
+     * Construct a new table with given name and column title. The column title should take this form: "UserID
      * string,Lastname string,Age int", with column name and type separated by a space, and titles separated by
      * delimiters.
      *
@@ -23,6 +23,13 @@ public class MyTable implements Table {
         this(name, columnTitle.split("\\s*,\\s*"));
     }
 
+    /**
+     * Construct a new table with given name and column titles.
+     * The column title should take this form: "UserID string",
+     * with column name and type separated by a space.
+     *
+     * @param columnTitles
+     */
     public MyTable(String name, String[] columnTitles) {
         this.name = name;
         columnTypes = new ArrayList<>();
@@ -35,6 +42,15 @@ public class MyTable implements Table {
         rows = new ArrayList<>();
     }
 
+    /**
+     * This static method returns a new table by reading contents from a file.
+     * The file must be text file with each line separated by delimiter (comma)
+     * as a row of column title or data.
+     *
+     * @param file
+     * @return
+     * @throws IOException
+     */
     public static MyTable createFromFile(File file) throws IOException {
         MyTable t = null;
         String line = null;
@@ -60,6 +76,10 @@ public class MyTable implements Table {
         columnNames = new ArrayList<>();
     }
 
+    /**
+     * Sets the delimiter. Default is comma (",").
+     * @param s
+     */
     public static void setDelimiter(String s) {
         delimiter = s;
     }
@@ -107,7 +127,7 @@ public class MyTable implements Table {
         List<Type> joinedTypes = new ArrayList<>();
         List<Row> joinedRows = new ArrayList<>();
 
-        // String and Type are immutable, so safe to directly addTable to lists
+        // String and Type are immutable, so safe to directly add to lists
         joinedNames.addAll(columnNames);
         joinedNames.addAll(table.getAllColumnNames());
         joinedTypes.addAll(columnTypes);
@@ -182,16 +202,16 @@ public class MyTable implements Table {
                         List<Entry> copyOfRow1 = r1.copy().getAllData();
                         List<Entry> copyOfRow2 = r2.copy().getAllData();
                         for (int k : sharedIndex.keySet()) {
-                            merged.add(copyOfRow1.get(k)); // addTable the overlapped data in order of the first row
+                            merged.add(copyOfRow1.get(k)); // add the overlapped data in order of the first row
                         }
                         for (int i = 0; i < copyOfRow1.size(); i++) {
                             if (!sharedIndex.keySet().contains(i)) {
-                                merged.add(copyOfRow1.get(i)); // addTable from row 1, excluding the matched entries
+                                merged.add(copyOfRow1.get(i)); // add from row 1, excluding the matched entries
                             }
                         }
                         for (int j = 0; j < copyOfRow2.size(); j++) {
                             if (!sharedIndex.values().contains(j)) {
-                                merged.add(copyOfRow2.get(j)); // addTable from row 2, excluding the matched entries
+                                merged.add(copyOfRow2.get(j)); // add from row 2, excluding the matched entries
                             }
                         }
                         joinedRows.add(new MyRow(merged.toArray(new Entry[0])));
@@ -208,19 +228,19 @@ public class MyTable implements Table {
             List<String> joinedNames = new ArrayList<>();
             List<Type> joinedTypes = new ArrayList<>();
 
-            // addTable the overlapped names in order of the first row
+            // add the overlapped names in order of the first row
             joinedNames.addAll(sharedColumnNames);
             joinedTypes.addAll(sharedColumnTypes);
             for (int i = 0; i < names1.size(); i++) {
                 if (!sharedIndex.keySet().contains(i)) {
-                    // addTable from this table, excluding the matched columns
+                    // add from this table, excluding the matched columns
                     joinedNames.add(names1.get(i));
                     joinedTypes.add(types1.get(i));
                 }
             }
             for (int j = 0; j < names2.size(); j++) {
                 if (!sharedIndex.values().contains(j)) {
-                    // addTable from row 2, excluding the matched entries
+                    // add from row 2, excluding the matched entries
                     joinedNames.add(names2.get(j));
                     joinedTypes.add(types2.get(j));
                 }

@@ -1,7 +1,6 @@
 package db;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -45,7 +44,7 @@ public class Database {
 //        }
 //        boolean status = false;
 //        try {
-//            addTable(MyTable.createFromFile(file));
+//            add(MyTable.createFromFile(file));
 //            status = true;
 //        } catch (FileNotFoundException fe) {
 //            System.out.println("ERROR: File " + file.getAbsolutePath() + " not found.");
