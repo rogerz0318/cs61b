@@ -1,5 +1,8 @@
 package hw3.puzzle;
 import org.junit.Test;
+
+import java.util.List;
+
 import static org.junit.Assert.*;
 
 public class TestBoard {
@@ -23,5 +26,12 @@ public class TestBoard {
 
         x[1][1] = 1000;
         assertEquals("Your Board class is mutable and you should be making a copy of the values in the passed tiles array. Please see the FAQ!", 3, b.tileAt(1, 1));
+    }
+
+    @Test
+    public void distToGoalTest() {
+        Board b = new Board(new int[][]{new int[]{8, 1, 3}, new int[]{4, 0, 2}, new int[]{7, 6, 5}});
+        assertEquals(5, b.hamming());
+        assertEquals(10, b.manhattan());
     }
 } 
