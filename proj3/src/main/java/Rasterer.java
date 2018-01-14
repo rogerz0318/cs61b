@@ -1,4 +1,6 @@
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -8,13 +10,17 @@ import java.util.Map;
  * not draw the output correctly.
  */
 public class Rasterer {
-    // Recommended: QuadTree instance variable. You'll need to make
-    //              your own QuadTree since there is no built-in quadtree in Java.
+
+    private QuadTree tree;
+    private String imgRoot;
+
+    private static final int MAX_DEPTH = 7;
 
     /** imgRoot is the name of the directory containing the images.
      *  You may not actually need this for your class. */
     public Rasterer(String imgRoot) {
-        // YOUR CODE HERE
+        this.imgRoot = imgRoot;
+        tree = new QuadTree(MAX_DEPTH);
     }
 
     /**
@@ -46,14 +52,72 @@ public class Rasterer {
      *                    string. <br>
      * "query_success" -> Boolean, whether the query was able to successfully complete. Don't
      *                    forget to set this to true! <br>
-     * @see #REQUIRED_RASTER_REQUEST_PARAMS
+     * @see MapServer
      */
     public Map<String, Object> getMapRaster(Map<String, Double> params) {
-        // System.out.println(params);
+//        System.out.println(params);
+//        long startTime = System.nanoTime();
         Map<String, Object> results = new HashMap<>();
-        System.out.println("Since you haven't implemented getMapRaster, nothing is displayed in "
-                           + "your browser.");
+        /* REQUIRED_RASTER_REQUEST_PARAMS = {"ullat", "ullon", "lrlat", "lrlon", "w", "h"}; */
+        double ullat = params.get("ullat"), ullon = params.get("ullon");
+        double lrlat = params.get("lrlat"), lrlon = params.get("lrlon");
+        double w = params.get("w"), h = params.get("h");
+        double lonDPP = (lrlon - ullon) / w;
+        // initialize results variables
+        String[][] grid = null;
+        double rasterUllon = 0, rasterUllat = 0, rasterLrlon = 0, rasterLrlat = 0;
+        int depth = 0;
+        boolean query_success;
+
+        try {
+            List<Tile> tiles = tree.sortedIntersectingTiles(lonDPP, ullat, ullon, lrlat, lrlon);
+            Tile first = tiles.get(0);
+            Tile last = tiles.get(tiles.size() - 1);
+
+            rasterUllon = first.getUllon();
+            rasterUllat = first.getUllat();
+            rasterLrlon = last.getLrlon();
+            rasterLrlat = last.getLrlat();
+            depth = first.getDepth();
+
+            if (tiles.size() == 1) {
+                grid = new String[][]{new String[]{imgRoot + "root.png"}};
+            } else {
+                // use the first and last tile to determine number of rows and columns
+                double rasterLonDPP = first.getLonDPP();
+                int nCol = (int) Math.round((rasterLrlon - rasterUllon) / rasterLonDPP / MapServer.TILE_SIZE);
+                if (tiles.size() % nCol != 0) {
+                    throw new RuntimeException("Intersecting tiles are not square share: " +
+                            "size is " + tiles.size() + ", but number of column is calculated to be " + nCol);
+                }
+                int nRow = tiles.size() / nCol;
+
+                grid = new String[nRow][nCol];
+                Iterator<Tile> it = tiles.iterator();
+                for (int i = 0; i < nRow; i++) {
+                    for (int j = 0; j < nCol; j++) {
+                        grid[i][j] = imgRoot + it.next().getName() + ".png";
+                    }
+                }
+            }
+            query_success = true;
+        } catch (Exception ex) {
+            System.out.println("Exception: " + ex.getMessage());
+//            ex.printStackTrace();
+            query_success = false;
+        }
+
+        // assemble results
+        results.put("render_grid", grid);
+        results.put("raster_ul_lon", rasterUllon);
+        results.put("raster_ul_lat", rasterUllat);
+        results.put("raster_lr_lon", rasterLrlon);
+        results.put("raster_lr_lat", rasterLrlat);
+        results.put("depth", depth);
+        results.put("query_success", query_success);
+
+//        long endTime = System.nanoTime();
+//        System.out.println("getMapRaster execution time: " + (double) (endTime - startTime) + " ns");
         return results;
     }
-
 }

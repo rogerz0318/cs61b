@@ -18,7 +18,7 @@ import java.util.ArrayList;
  */
 public class GraphDB {
     /** Your instance variables for storing the graph. You should consider
-     * creating helper classes, e.g. Node, Edge, etc. */
+     * creating helper classes, e.g. Tile, Edge, etc. */
 
     /**
      * Example constructor shows how to create and start an XML parser.
