@@ -10,6 +10,11 @@ import java.util.LinkedList;
  */
 public class Router {
     /**
+     * Use ArrayHeap from Lab10
+     */
+//    private ArrayHeap pq;
+
+    /**
      * Return a LinkedList of <code>Long</code>s representing the shortest path from st to dest, 
      * where the longs are node IDs.
      */

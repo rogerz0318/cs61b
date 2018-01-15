@@ -5,7 +5,7 @@ import java.io.IOException;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
-import java.util.ArrayList;
+import java.util.*;
 
 /**
  * Graph for storing all of the intersection (vertex) and road (edge) information.
@@ -18,7 +18,14 @@ import java.util.ArrayList;
  */
 public class GraphDB {
     /** Your instance variables for storing the graph. You should consider
-     * creating helper classes, e.g. Tile, Edge, etc. */
+     * creating helper classes, e.g. Node, Edge, etc. */
+    private Map<Long, Node> nodes;
+    private Map<String, Node> pointOfInterests;
+
+    public GraphDB() {
+        nodes = new HashMap<>();
+        pointOfInterests = new HashMap<>();
+    }
 
     /**
      * Example constructor shows how to create and start an XML parser.
@@ -26,6 +33,7 @@ public class GraphDB {
      * @param dbPath Path to the XML file to be parsed.
      */
     public GraphDB(String dbPath) {
+        this();
         try {
             File inputFile = new File(dbPath);
             SAXParserFactory factory = SAXParserFactory.newInstance();
@@ -53,38 +61,118 @@ public class GraphDB {
      *  we can reasonably assume this since typically roads are connected.
      */
     private void clean() {
-        // TODO: Your code here.
+//        System.out.println("Number of nodes before cleaning: " + nodes.keySet().size());
+        Iterator<Long> it = vertices().iterator();
+        while (it.hasNext()) {
+            long id = it.next();
+            if (getNode(id).edges.isEmpty()) {
+                it.remove();
+            }
+        }
+//        System.out.println("Number of nodes after cleaning: " + nodes.keySet().size());
     }
 
     /** Returns an iterable of all vertex IDs in the graph. */
     Iterable<Long> vertices() {
-        //YOUR CODE HERE, this currently returns only an empty list.
-        return new ArrayList<Long>();
+        return nodes.keySet();
     }
 
     /** Returns ids of all vertices adjacent to v. */
     Iterable<Long> adjacent(long v) {
-        return null;
+        List<Long> results = new ArrayList<>();
+        Node node = getNode(v);
+        for (Edge e : node.edges) {
+            results.add(e.adjacent(node).id);
+        }
+        return results;
     }
 
     /** Returns the Euclidean distance between vertices v and w, where Euclidean distance
      *  is defined as sqrt( (lonV - lonV)^2 + (latV - latV)^2 ). */
     double distance(long v, long w) {
-        return 0;
+        Node n1 = getNode(v), n2 = getNode(w);
+        return distance(n1.lon, n2.lon, n1.lat, n2.lat);
+    }
+
+    static double distance(Node n1, Node n2) {
+        return GraphDB.distance(n1.lon, n2.lon, n2.lat, n2.lat);
+    }
+
+    static double distance(double lon1, double lon2, double lat1, double lat2) {
+        double dlon = lon1 - lon2, dlat = lat1 - lat2;
+        return Math.sqrt(dlon * dlon + dlat * dlat);
     }
 
     /** Returns the vertex id closest to the given longitude and latitude. */
     long closest(double lon, double lat) {
-        return 0;
+        Node closestNode = null;
+        double closestDistance = Double.MAX_VALUE;
+        for (Node node : nodes.values()) {
+            double distance = distance(node.lon, lon, node.lat, lat);
+            if (distance < closestDistance) {
+                closestDistance = distance;
+                closestNode = node;
+            }
+        }
+        return closestNode.id;
     }
 
     /** Longitude of vertex v. */
     double lon(long v) {
-        return 0;
+        return getNode(v).lon;
     }
 
     /** Latitude of vertex v. */
     double lat(long v) {
-        return 0;
+        return getNode(v).lat;
+    }
+
+    /**
+     * Return node by id.
+     * @param id
+     * @return
+     */
+    Node getNode(long id) {
+        return nodes.get(id);
+    }
+
+    /**
+     * Add node by all the node information.
+     * @param id
+     * @param lat
+     * @param lon
+     * @param name
+     */
+    void addNode(long id, double lat, double lon, String name) {
+        addNode(new Node(id, lat, lon, name));
+    }
+
+    /**
+     * Add node by node instance.
+     * @param node
+     */
+    void addNode(Node node) {
+        nodes.put(node.id, node);
+    }
+
+    /**
+     * Add node to points of interest.
+     * @param node
+     */
+    void addPointOfInterest(Node node) {
+        pointOfInterests.put(node.name, node);
+    }
+
+    /**
+     * Add edge to the graph, and record this edge in connected nodes.
+     * @param v
+     * @param w
+     * @param tags
+     */
+    void addEdge(long v, long w, Map<String, String> tags) {
+        Node n1 = getNode(v), n2 = getNode(w);
+        Edge e = new Edge(n1, n2, tags);
+        n1.edges.add(e);
+        n2.edges.add(e);
     }
 }

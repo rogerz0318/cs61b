@@ -87,7 +87,7 @@ public class Rasterer {
                 double rasterLonDPP = first.getLonDPP();
                 int nCol = (int) Math.round((rasterLrlon - rasterUllon) / rasterLonDPP / MapServer.TILE_SIZE);
                 if (tiles.size() % nCol != 0) {
-                    throw new RuntimeException("Intersecting tiles are not square share: " +
+                    throw new RuntimeException("Intersecting tiles are not square shape: " +
                             "size is " + tiles.size() + ", but number of column is calculated to be " + nCol);
                 }
                 int nRow = tiles.size() / nCol;
