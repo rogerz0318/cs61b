@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Node class to store node id, latitude, longitude and a list of edges it connects to.
@@ -24,5 +25,23 @@ public class Node {
 
     public Node(long id, double lat, double lon) {
         this(id, lat, lon, null);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Node node = (Node) o;
+        return id == node.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return ((Long) id).hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return String.valueOf(id);
     }
 }

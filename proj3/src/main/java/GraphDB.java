@@ -91,11 +91,11 @@ public class GraphDB {
      *  is defined as sqrt( (lonV - lonV)^2 + (latV - latV)^2 ). */
     double distance(long v, long w) {
         Node n1 = getNode(v), n2 = getNode(w);
-        return distance(n1.lon, n2.lon, n1.lat, n2.lat);
+        return distance(n1, n2);
     }
 
     static double distance(Node n1, Node n2) {
-        return GraphDB.distance(n1.lon, n2.lon, n2.lat, n2.lat);
+        return GraphDB.distance(n1.lon, n2.lon, n1.lat, n2.lat);
     }
 
     static double distance(double lon1, double lon2, double lat1, double lat2) {
@@ -105,6 +105,10 @@ public class GraphDB {
 
     /** Returns the vertex id closest to the given longitude and latitude. */
     long closest(double lon, double lat) {
+        return closestNode(lon, lat).id;
+    }
+
+    Node closestNode(double lon, double lat) {
         Node closestNode = null;
         double closestDistance = Double.MAX_VALUE;
         for (Node node : nodes.values()) {
@@ -114,7 +118,7 @@ public class GraphDB {
                 closestNode = node;
             }
         }
-        return closestNode.id;
+        return closestNode;
     }
 
     /** Longitude of vertex v. */
