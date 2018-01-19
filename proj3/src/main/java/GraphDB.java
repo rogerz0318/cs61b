@@ -21,10 +21,12 @@ public class GraphDB {
      * creating helper classes, e.g. Node, Edge, etc. */
     private Map<Long, Node> nodes;
     private Map<String, Node> pointOfInterests;
+    private Trie poiTrie;
 
     public GraphDB() {
         nodes = new HashMap<>();
         pointOfInterests = new HashMap<>();
+        poiTrie = new Trie();
     }
 
     /**
@@ -164,7 +166,11 @@ public class GraphDB {
      * @param node
      */
     void addPointOfInterest(Node node) {
-        pointOfInterests.put(node.name, node);
+        String cleanedNameNoSpace = GraphDB.cleanString(node.name).replaceAll("\\s+", "");
+        // space is removed as well for simplicity
+        pointOfInterests.put(cleanedNameNoSpace, node);
+//        System.out.println(cleanedNameNoSpace);
+        poiTrie.insert(cleanedNameNoSpace);
     }
 
     /**
@@ -178,5 +184,42 @@ public class GraphDB {
         Edge e = new Edge(n1, n2, tags);
         n1.edges.add(e);
         n2.edges.add(e);
+    }
+
+    /**
+     * Returns a list of location names with specified prefix.
+     * @param prefix
+     * @return
+     */
+    List<String> getLocationsByPrefix(String prefix) {
+        List<String> results = poiTrie.search(cleanString(prefix).replaceAll("\\s+", ""));
+        for (int i = 0; i < results.size(); i++) {
+            results.set(i, pointOfInterests.get(results.get(i)).name);
+        }
+        return results;
+    }
+
+    /**
+     * Returns a list of data map corresponding to locations that has the given location name.
+     * Data included are latitude, longitude, name and id.
+     * @param locationName
+     * @return
+     */
+    List<Map<String, Object>> getLocations(String locationName) {
+        List<Map<String, Object>> results = new ArrayList<>();
+        String locationNameNoSpace = cleanString(locationName).replaceAll("\\s+", "");
+        List<String> names = poiTrie.search(locationNameNoSpace);
+        for (String name : names) {
+            if (name.equals(locationNameNoSpace)) {
+                Node location = pointOfInterests.get(name);
+                Map<String, Object> attributes = new HashMap<>();
+                attributes.put("lat", location.lat);
+                attributes.put("lon", location.lon);
+                attributes.put("name", location.name);
+                attributes.put("id", location.id);
+                results.add(attributes);
+            }
+        }
+        return results;
     }
 }
