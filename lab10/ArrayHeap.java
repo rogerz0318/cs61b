@@ -23,6 +23,20 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
         size = 0;
     }
 
+    public boolean isEmpty() {
+        return size == 0;
+    }
+
+    public boolean contains(T t) {
+        for (int i = 1; i <= size; i++) {
+            Node n = contents[i];
+            if (n.item().equals(t)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
      * Returns the index of the node to the left of the node at i.
      */
@@ -173,7 +187,9 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
         swap(1, size);
         contents[size] = null;
         size -= 1;
-        sink(1);
+        if (size > 0) {
+            sink(1);
+        }
         return minItem;
     }
 
@@ -196,7 +212,7 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
      */
     @Override
     public void changePriority(T item, double priority) {
-        for (int i = 0; i < contents.length; i++) {
+        for (int i = 1; i <= size; i++) {
             Node node = getNode(i);
             if (node.item().equals(item)) {
                 node.myPriority = priority;
@@ -280,7 +296,7 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
     /** Helper function to resize the backing array when necessary. */
     private void resize(int capacity) {
         Node[] temp = new ArrayHeap.Node[capacity];
-        for (int i = 1; i <= temp.length; i++) {
+        for (int i = 1; i <= size; i++) {
             temp[i] = contents[i];
         }
         contents = temp;
