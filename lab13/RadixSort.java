@@ -1,3 +1,9 @@
+import org.junit.Test;
+
+import java.util.Arrays;
+
+import static org.junit.Assert.*;
+
 /**
  * Class for doing Radix sort
  *
@@ -20,7 +26,59 @@ public class RadixSort
      **/
     public static String[] sort(String[] asciis)
     {
-        return null;
+        // get maximum string length
+        int maxLength = Integer.MIN_VALUE;
+        for (String s : asciis) {
+            if (s.length() > maxLength) {
+                maxLength = s.length();
+            }
+        }
+        String[] sorted = asciis;
+        // LSD algorithm (sorting from least significant digit)
+        for (int i = 0; i < maxLength; i++) {
+//            System.out.println(Arrays.toString(sorted));
+            sorted = sortByDigit(sorted, maxLength - 1 - i);
+        }
+        return sorted;
+    }
+
+    /**
+     * Returns an array of strings sorted by the char at given index.
+     * @param asciis Strings to be sorted
+     * @param index index of char to sort
+     * @return
+     */
+    private static String[] sortByDigit(String[] asciis, int index) {
+        // collect all the chars at the given index
+        int[] charsToSort = new int[asciis.length];
+        for (int i = 0; i < asciis.length; i++) {
+            String s = asciis[i];
+            if (s.length() <= index) {
+                // if string is not long enough, treat it to be smallest
+                charsToSort[i] = Character.MIN_VALUE;
+            } else {
+                charsToSort[i] = s.charAt(index);
+            }
+        }
+        // counting-sort the chars
+        int[] sortedChars = CountingSort.naiveCountingSort(charsToSort);
+        // rearrange strings based on the sorted chars
+        String[] sortedStrings = new String[asciis.length];
+        boolean[] visited = new boolean[asciis.length]; // Key: Keep track of strings that has already been placed
+        for (int i = 0; i < asciis.length; i++) {
+            // loop through sorted chars
+            for (int j = 0; j < asciis.length; j++) {
+                // loop through unsorted chars
+                if (!visited[j] && charsToSort[j] == sortedChars[i]) {
+                    // If this string is not visited and corresponding char is the same as the sorted one,
+                    // put this string in the sorted string array. Guarantees stability.
+                    sortedStrings[i] = asciis[j];
+                    visited[j] = true;
+                    break;
+                }
+            }
+        }
+        return sortedStrings;
     }
 
     /**
@@ -35,6 +93,16 @@ public class RadixSort
      **/
     private static void sortHelper(String[] asciis, int start, int end, int index)
     {
-        //TODO use if you want to
+
+    }
+
+    @Test
+    public void radixSortTest() {
+        String[] toSort = new String[]{"aab", "a", "zac", "pqwwf", "#5$", "c", "77e67"};
+        String[] actual = sort(toSort);
+//        System.out.println(Arrays.toString(actual));
+        Arrays.sort(toSort);
+//        System.out.println(Arrays.toString(toSort));
+        assertArrayEquals(toSort, actual);
     }
 }
