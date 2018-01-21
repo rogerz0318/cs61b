@@ -13,6 +13,7 @@ import static org.junit.Assert.*;
  **/
 public class RadixSort
 {
+    private static final int ALPHABET_SIZE = 256;
 
     /**
      * Does Radix sort on the passed in array with the following restrictions:
@@ -49,9 +50,10 @@ public class RadixSort
      * @return
      */
     private static String[] sortByDigit(String[] asciis, int index) {
+        final int n = asciis.length;
         // collect all the chars at the given index
-        int[] charsToSort = new int[asciis.length];
-        for (int i = 0; i < asciis.length; i++) {
+        int[] charsToSort = new int[n];
+        for (int i = 0; i < n; i++) {
             String s = asciis[i];
             if (s.length() <= index) {
                 // if string is not long enough, treat it to be smallest
@@ -61,6 +63,7 @@ public class RadixSort
             }
         }
         // counting-sort the chars
+        /* not really counting sort, still comparison sort, takes O(N^2)!
         int[] sortedChars = CountingSort.naiveCountingSort(charsToSort);
         // rearrange strings based on the sorted chars
         String[] sortedStrings = new String[asciis.length];
@@ -79,6 +82,25 @@ public class RadixSort
             }
         }
         return sortedStrings;
+        */
+
+        /* Following algorithm taken from Algorithm 4th Edition.
+         * The additional count space at index zero and count accumulation is genius idea. */
+        int[] count = new int[ALPHABET_SIZE + 1];
+        // count chars
+        for (int i = 0; i < n; i++) {
+            count[charsToSort[i] + 1]++;
+        }
+        // accumulate
+        for (int i = 0; i < count.length - 1; i++) {
+            count[i + 1] += count[i];
+        }
+        // copy data
+        String[] sorted = new String[n];
+        for (int i = 0; i < n; i++) {
+            sorted[count[charsToSort[i]]++] = asciis[i];
+        }
+        return sorted;
     }
 
     /**
